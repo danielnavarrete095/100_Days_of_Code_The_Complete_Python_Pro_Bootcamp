@@ -10,9 +10,7 @@
 ## The cards in the list have equal probability of being drawn.
 ## Cards are not removed from the deck as they are drawn.
 ## The computer is the dealer.
-import time
 import os
-import random
 from traceback import print_tb
 import art
 import cards
@@ -33,67 +31,67 @@ def print_game():
 
 User = Player("User")
 Dealer = Player("Dealer")
-Num_of_decks = 4
-Deck = cards.cards * Num_of_decks
-clear_console()
-print(art.logo)
 
-print("Press enter to start game")
-# User.add_card([cards.create_card(0), 0])
-# User.compute_score()
-# User.add_card([cards.create_card(0), 0])
-# User.compute_score()
-# cards.print_cards(cards.hidden_card, cards.hidden_card, cards.hidden_card, cards.hidden_card)
-input()
+def main():
+    NUM_OF_DECKS = 4
+    Deck = cards.cards * NUM_OF_DECKS
+    clear_console()
+    print(art.logo)
 
-# Get 1 Dealer card
-# Create Dealer first card and second will be hidden
-Dealer.add_card(Deck)
-Dealer.add_card(Deck, hidden=True)
+    print("Press enter to start game")
+    input()
 
-# Now get User cards
-User.add_card(Deck)
-User.add_card(Deck)
+    # Get 1 Dealer card
+    # Create Dealer first card and second will be hidden
+    Dealer.add_card(Deck)
+    Dealer.add_card(Deck, hidden=True)
+
+    # Now get User cards
+    User.add_card(Deck)
+    User.add_card(Deck)
 
 
-while(True):
+    while(True):
+        print_game()
+        print("Type 'h' to hit, type 's' to stand")
+        option = input()
+        # If User selected the option to draw another card
+        if option.lower() == "h":
+            # add another card to users
+            User.add_card(Deck)
+        # If User selected the option to stand
+        elif option.lower() == "s":
+            break
+
+
+    # Reveal Dealer's second card
+    Dealer.remove_card()
+    Dealer.add_card(Deck)
+    Dealer.compute_score()
+    User.compute_score()
+    # Dealer should try to beat user
+    if User.score <= 21: # This would mean user already lost
+        if Dealer.score < User.score:
+            # Dealer should keep drawing cards if < 21
+            while Dealer.score < 21:
+                Dealer.add_card(Deck)
+                Dealer.compute_score()
     print_game()
-    print("Type 'h' to hit, type 's' to stand")
-    option = input()
-    # If User selected the option to draw another card
-    if option.lower() == "h":
-        # add another card to users
-        User.add_card(Deck)
-    # If User selected the option to stand
-    elif option.lower() == "s":
-        break
-
-
-# Reveal Dealer's second card
-Dealer.remove_card()
-Dealer.add_card(Deck)
-Dealer.compute_score()
-User.compute_score()
-# Dealer should try to beat user
-if User.score <= 21: # This would mean user already lost
-    if Dealer.score < User.score:
-        # Dealer should keep drawing cards if < 21
-        while Dealer.score < 21:
-            Dealer.add_card(Deck)
-            Dealer.compute_score()
-print_game()
-User.compute_score()
-Dealer.compute_score()
-User.print_score()
-Dealer.print_score()
-if User.score > 21:
-    print("BUST!\nYou loose!🙁");
-elif Dealer.score > 21:
-    print("You win!🙂");
-else:
-    if User.score > Dealer.score:
+    User.compute_score()
+    Dealer.compute_score()
+    User.print_score()
+    Dealer.print_score()
+    if User.score > 21:
+        print("BUST!\nYou loose!🙁");
+    elif Dealer.score > 21:
         print("You win!🙂");
-    elif User.score < Dealer.score:
-        print("You loose!🙁");
     else:
-        print("Draw!😐")
+        if User.score > Dealer.score:
+            print("You win!🙂");
+        elif User.score < Dealer.score:
+            print("You loose!🙁");
+        else:
+            print("Draw!😐")
+
+if __name__ == '__main__':
+    main()
