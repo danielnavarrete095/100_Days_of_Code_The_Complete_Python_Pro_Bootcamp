@@ -13,61 +13,87 @@
 import time
 import os
 import random
+from traceback import print_tb
 import art
 import cards
+from Player import Player
 
-def clearConsole():
+def clear_console():
     command = 'clear'
     if os.name in ('nt', 'dos'):  # If Machine is running on Windows, use cls
         command = 'cls'
     os.system(command)
 
-def getRandomIndex():
-    return round(random.random() * 12)
+def print_game():
+    clear_console()
+    print("{0} cards:".format(Dealer.name))
+    cards.print_cards(Dealer.cards)
+    print("{0} cards:".format(User.name))
+    cards.print_cards(User.cards)
 
-def printGame():
-    clearConsole()
-    print("Dealer cards:")
-    cards.print_cards(dealer_cards)
-    print("Your cards:")
-    cards.print_cards(user_cards)
-
-
+User = Player("User")
+Dealer = Player("Dealer")
+Num_of_decks = 4
+Deck = cards.cards * Num_of_decks
+clear_console()
 print(art.logo)
 
 print("Press enter to start game")
+# User.add_card([cards.create_card(0), 0])
+# User.compute_score()
+# User.add_card([cards.create_card(0), 0])
+# User.compute_score()
 # cards.print_cards(cards.hidden_card, cards.hidden_card, cards.hidden_card, cards.hidden_card)
 input()
 
-# Get 1 dealer card
-# Create dealer first card and second will be hidden
-dealer_cards = []
-dealer_cards.append(cards.create_card(getRandomIndex()))
-dealer_cards.append(cards.hidden_card)
+# Get 1 Dealer card
+# Create Dealer first card and second will be hidden
+Dealer.add_card(Deck)
+Dealer.add_card(Deck, hidden=True)
 
-# Now get user cards
-user_cards = []
-for i in range(2):
-    user_cards.append(cards.create_card(getRandomIndex()))
+# Now get User cards
+User.add_card(Deck)
+User.add_card(Deck)
 
-printGame()
-print("Type 'h' to hit, type 's' to stand")
-option = input()
-# If user selected the option to draw another card
-if option.lower() == "h":
-    # add another card to users
-    user_cards.append(cards.create_card(getRandomIndex()))
 
-# If user selected the option to stand
-elif option.lower() == "s":
-    # Reveal dealer's second card
-    dealer_cards.pop(1)
-    dealer_cards.append(cards.create_card(getRandomIndex()))
+while(True):
+    print_game()
+    print("Type 'h' to hit, type 's' to stand")
+    option = input()
+    # If User selected the option to draw another card
+    if option.lower() == "h":
+        # add another card to users
+        User.add_card(Deck)
+    # If User selected the option to stand
+    elif option.lower() == "s":
+        break
 
-printGame()
-# cards.print_card(cards.hidden_card)
-# cards.print_card(cards.dealer_card)
-# time.sleep(2)
-# clearConsole()
-# cards.print_2_cards(cards.dealer_card, cards.hidden_card)
 
+# Reveal Dealer's second card
+Dealer.remove_card()
+Dealer.add_card(Deck)
+Dealer.compute_score()
+User.compute_score()
+# Dealer should try to beat user
+if User.score <= 21: # This would mean user already lost
+    if Dealer.score < User.score:
+        # Dealer should keep drawing cards if < 21
+        while Dealer.score < 21:
+            Dealer.add_card(Deck)
+            Dealer.compute_score()
+print_game()
+User.compute_score()
+Dealer.compute_score()
+User.print_score()
+Dealer.print_score()
+if User.score > 21:
+    print("BUST!\nYou loose!🙁");
+elif Dealer.score > 21:
+    print("You win!🙂");
+else:
+    if User.score > Dealer.score:
+        print("You win!🙂");
+    elif User.score < Dealer.score:
+        print("You loose!🙁");
+    else:
+        print("Draw!😐")

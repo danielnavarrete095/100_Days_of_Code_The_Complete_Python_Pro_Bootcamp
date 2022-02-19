@@ -1,5 +1,8 @@
 import random
 
+def get_random_index(max):
+    return round(random.random() * max)
+
 suits_symbols = ['♠', '♦', '♥', '♣']
 cards = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 card_values = {
@@ -17,19 +20,6 @@ card_values = {
         'Q': 10,
         'K': 10
     }
-
-dealer_card = [[] for i in range(9)]
-dealer_card[0] += ('┌─────────┐')
-dealer_card[1] += ('│{}{}       │'.format(cards[0], " "))  # use two {} one for char, one for space or char
-dealer_card[2] += ('│         │')
-dealer_card[3] += ('│         │')
-dealer_card[4] += ('│    {}    │'.format(suits_symbols[0]))
-dealer_card[5] += ('│         │')
-dealer_card[6] += ('│         │')
-dealer_card[7] += ('│       {}{}│'.format(" ", cards[0]))
-dealer_card[8] += ('└─────────┘')
-
-
 
 hidden_card = [
     ['┌─────────┐'],
@@ -78,17 +68,24 @@ def print_cards(cards):
     print_card(multi_card)
 
 
-def create_card(card_index):
+def create_card(card_num):
     symbol_index = round(random.random()*3)
-    space = " " if cards[card_index] != "10" else ""
+    space = " " if card_num != "10" else ""
     card = [[] for i in range(9)]
     card[0] += ('┌─────────┐')
-    card[1] += ('│{}{}       │'.format(cards[card_index], space))  # use two {} one for char, one for space or char
+    card[1] += ('│{}{}       │'.format(card_num, space))  # use two {} one for char, one for space or char
     card[2] += ('│         │')
     card[3] += ('│         │')
     card[4] += ('│    {}    │'.format(suits_symbols[symbol_index]))
     card[5] += ('│         │')
     card[6] += ('│         │')
-    card[7] += ('│       {}{}│'.format(space, cards[card_index]))
+    card[7] += ('│       {}{}│'.format(space, card_num))
     card[8] += ('└─────────┘')
+    return card
+
+def get_card_from_deck(deck):
+    deck_size = len(deck)
+    index = get_random_index(deck_size - 1)
+    card = deck[index]
+    deck.pop(index)
     return card
