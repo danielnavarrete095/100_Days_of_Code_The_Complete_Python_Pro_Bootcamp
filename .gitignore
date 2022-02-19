@@ -1,0 +1,5 @@
+*.pdf
+*.xlsx
+*.zip
+__pycache__/
+Wallpapers/
