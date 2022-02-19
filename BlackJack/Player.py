@@ -1,9 +1,5 @@
 from cards import get_card_from_deck
 import cards
-import random
-
-# def getRandomIndex():
-#     return round(random.random() * 12)
 
 class Player:    
     def __init__(self, name):

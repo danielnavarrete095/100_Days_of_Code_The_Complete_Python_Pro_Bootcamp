@@ -89,3 +89,5 @@ def get_card_from_deck(deck):
     card = deck[index]
     deck.pop(index)
     return card
+
+var_global = 3
