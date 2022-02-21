@@ -4,15 +4,14 @@ class Snake:
 
     directions = {"right" : 0, "up" : 90, "left" : 180, "down" : 270}
 
-    def __init__(self, size, shape, screen):
+    def __init__(self, size, shape):
         self.body = []
         self.size = size
         self.shape = shape
-        self.screen = screen
         self.direction = "right"
         self.SEGMENT_SIZE = 20
 
-    def createBody(self):
+    def create_body(self):
         for i in range(self.size):
             # create new segment
             segment = Turtle()
@@ -21,11 +20,9 @@ class Snake:
             segment.color("white")
             segment.setx(- i * self.SEGMENT_SIZE)
             self.body.append(segment)
-        self.screen.update()
         
     def move(self):
         direction = self.direction
-        prev_direction = ""
         prev_x = 0
         prev_y = 0
         for i, segment in enumerate(self.body):
@@ -42,7 +39,6 @@ class Snake:
             # body should occupy previous segment position
             else:
                 segment.setpos(new_x, new_y)
-        self.screen.update()
         
     def set_direction(self, dir):
         direction = self.direction
