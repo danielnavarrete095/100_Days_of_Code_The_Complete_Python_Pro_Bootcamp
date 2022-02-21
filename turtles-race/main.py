@@ -84,10 +84,6 @@ def advance_turtle(turtle):
     return False
 
 def get_random_color():
-    # r = round(random.random() * 255)
-    # g = round(random.random() * 255)
-    # b = round(random.random() * 255)
-    # return (r, g, b)
     color = random.choice(turtle_colors)
     return color
 
@@ -100,8 +96,6 @@ def main():
         canvas_width = 900
         canvas_height = NUM_OF_TURTLES * 50
         screen.screensize(canvas_width, canvas_height)
-
-
 
         draw_track(NUM_OF_TURTLES)
         fill_turtle_list()
@@ -122,7 +116,6 @@ def main():
         else:
             screen.bye()
             break
-    # screen.exitonclick()
 
 if __name__ == '__main__':
     main()
