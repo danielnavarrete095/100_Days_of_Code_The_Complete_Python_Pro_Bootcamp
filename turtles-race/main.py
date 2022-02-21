@@ -2,10 +2,12 @@ from textwrap import fill
 from turtle import Turtle, Screen, colormode as turtle_set_colormode
 import random
 
-NUM_OF_TURTLES = 10
+NUM_OF_TURTLES = 5
 drawing_turtle = Turtle()
 drawing_turtle.hideturtle()
 drawing_turtle.speed("fastest")
+screen = Screen()
+turtle_list = []
 turtle_colors = [
     "blue",
     "yellow",
@@ -20,12 +22,19 @@ turtle_colors = [
 ]
 
 def fill_turtle_list():
+    used_colors = []
     for i in range(NUM_OF_TURTLES):
         turtle = Turtle()
         turtle.shape("turtle")
         turtle.resizemode("user")
         turtle.speed("fastest")
-        turtle.color(get_random_color())
+        
+        new_color = get_random_color()
+        while new_color in used_colors:
+            new_color = get_random_color()
+        used_colors.append(new_color)
+        turtle.color(new_color)
+
         turtle.pu()
         x_coord = -screen.screensize()[0] / 2 + 25
         y_coord = NUM_OF_TURTLES * 50 / 2 - i * 50 - 25
@@ -80,36 +89,40 @@ def get_random_color():
     # b = round(random.random() * 255)
     # return (r, g, b)
     color = random.choice(turtle_colors)
-    turtle_colors.remove(color) 
     return color
 
-screen = Screen()
-turtle_list = []
 def main():
-    # screen.setup(width = 500, height = NUM_OF_TURTLES * 50)
-    response = screen.textinput(title="Make your bet", prompt=f"Which turtle will win the race? Enter a number from 1-{NUM_OF_TURTLES}")
-    turtle_set_colormode(255)
-    screen.bgcolor((211, 211, 211))
-    screen.setup(width = 910, height = 510)
-    width = 900
-    coord_x = width / 2
-    height = NUM_OF_TURTLES * 50
-    coord_y = height / 2
-    screen.screensize(width, height)
-    draw_rectangle((-coord_x, -coord_y), width, height, "white")
+    while(True):
+        turtle_set_colormode(255)
+        screen.bgcolor((211, 211, 211))
+        screen.setup(width = 910, height = 510)
+        screen.title("Turtle Race 🏁")
+        canvas_width = 900
+        canvas_height = NUM_OF_TURTLES * 50
+        screen.screensize(canvas_width, canvas_height)
 
-    # my_turtle = Turtle()
-    # my_turtle.write("1aadsfdgsgewg34670")
-    # draw_rectangle((0,0), 100, 100, "white")
-    
-    # screen.onkey(key="space", fun=advance_turtles_list)
 
-    draw_track(NUM_OF_TURTLES)
-    fill_turtle_list()
-    winner = advance_turtles_list()
-    print(f"The winner is #{turtle_list.index(winner)}")
 
-    screen.exitonclick()
+        draw_track(NUM_OF_TURTLES)
+        fill_turtle_list()
+        response = screen.textinput(title="Make your bet", prompt=f"Which turtle will win the race? Enter a number from 1-{NUM_OF_TURTLES}")
+        winner_index = advance_turtles_list()
+        winner_turtle = turtle_list.index(winner_index) + 1
+
+        if int(response) == winner_turtle:
+            title = "You won! congratulations."
+        else:
+            title = "Sorry, you lost."
+        message = f"The winner is #{winner_turtle}."
+        message += "\nType 'yes' to play again or 'no' to exit"
+        response = screen.textinput(title=title, prompt=message)
+        if response.lower() == "yes" or response.lower() == "y":
+            screen.clearscreen()
+            turtle_list.clear()
+        else:
+            screen.bye()
+            break
+    # screen.exitonclick()
 
 if __name__ == '__main__':
     main()
