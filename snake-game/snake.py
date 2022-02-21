@@ -4,63 +4,45 @@ class Snake:
 
     directions = {"right" : 0, "up" : 90, "left" : 180, "down" : 270}
 
-    def __init__(self, size, screen):
+    def __init__(self, size, shape, screen):
         self.body = []
         self.size = size
+        self.shape = shape
+        self.screen = screen
         self.direction = "right"
-        self.SQUARE_SIZE = 20
+        self.SEGMENT_SIZE = 20
 
-    def createBody(self, screen):
+    def createBody(self):
         for i in range(self.size):
-            # create new square
-            square = Turtle()
-            square.pu()
-            square.shape("square")
-            square.color("white")
-            square.setx(- i * self.SQUARE_SIZE)
-            self.body.append(square)
-        screen.update()
+            # create new segment
+            segment = Turtle()
+            segment.pu()
+            segment.shape(self.shape)
+            segment.color("white")
+            segment.setx(- i * self.SEGMENT_SIZE)
+            self.body.append(segment)
+        self.screen.update()
         
-    def move(self, screen):
+    def move(self):
         direction = self.direction
         prev_direction = ""
         prev_x = 0
         prev_y = 0
-        for i, square in enumerate(self.body):
-            square_direction = self.get_square_direction(square)
+        for i, segment in enumerate(self.body):
+            segment_direction = self.get_segment_direction(segment)
+            new_x = prev_x
+            new_y = prev_y
+            prev_x = segment.pos()[0]
+            prev_y = segment.pos()[1]
             # head should follow global direction
             if i == 0:
-                if direction != square_direction:
-                    self.set_square_direction(square, direction)
-                square.fd(self.SQUARE_SIZE)
-            # body should follow previous square direction
+                if direction != segment_direction:
+                    self.set_segment_direction(segment, direction)
+                segment.fd(self.SEGMENT_SIZE)
+            # body should occupy previous segment position
             else:
-                # fd()
-                # if not in the right direction
-                # if coordinate is right, turn dir
-                square.fd(self.SQUARE_SIZE)
-                prev_square = self.body[i - 1]
-                prev_direction = self.get_square_direction(prev_square)
-                if square_direction != prev_direction:
-                    prev_x = round(prev_square.pos()[0])
-                    prev_y = round(prev_square.pos()[1])
-                    cur_x = round(square.pos()[0])
-                    cur_y = round(square.pos()[1])
-                    # if dir is up or down check x coord
-                    if prev_direction == "up" or prev_direction == "down":
-                        # if coord == prev_coord, change dir
-                        if prev_x == cur_x:
-                            self.set_square_direction(square, prev_direction)
-                        # else:
-                        #     print(f"{i} x: {cur_x}, {i - 1} x: {prev_x}")
-                    # if dir is left or right check y coord
-                    elif prev_direction == "right" or prev_direction == "left":
-                        # if coord == prev_coord, change dir
-                        if prev_y == cur_y:
-                            self.set_square_direction(square, prev_direction)
-                        # else:
-                        #     print(f"{i} y: {cur_y}, {i - 1} y: {prev_y}")
-        screen.update()
+                segment.setpos(new_x, new_y)
+        self.screen.update()
         
     def set_direction(self, dir):
         direction = self.direction
@@ -71,13 +53,13 @@ class Snake:
         elif(direction == "up" or direction == "down") and (dir == "right" or dir == "left"):
             self.direction = dir
             
-    def get_square_direction(self, square):
-        square_direction = square.heading()
+    def get_segment_direction(self, segment):
+        segment_direction = segment.heading()
         for dir in self.directions:
-            if self.directions[dir] == square_direction:
+            if self.directions[dir] == segment_direction:
                 return dir
                 
-    def set_square_direction(self, square, direction):
-        square.setheading(self.directions[direction])
+    def set_segment_direction(self, segment, direction):
+        segment.setheading(self.directions[direction])
             
 

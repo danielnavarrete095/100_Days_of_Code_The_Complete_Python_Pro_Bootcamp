@@ -31,14 +31,14 @@ def main():
     screen.onkey(key="Up", fun=move_up)
     screen.onkey(key="Down", fun=move_down)
     
-    my_snake = Snake(3, screen)
-    my_snake.createBody(screen)
+    my_snake = Snake(3, shape="square", screen=screen)
+    my_snake.createBody()
 
     game_is_on = True
     while(game_is_on):
-        my_snake.move(screen)
+        my_snake.move()
         time.sleep(0.1)
 
-    screen.exitonclick()
+    # screen.exitonclick()
 if __name__ == '__main__':
     main()
