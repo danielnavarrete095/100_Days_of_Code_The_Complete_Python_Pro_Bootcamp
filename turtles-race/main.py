@@ -2,21 +2,21 @@ from textwrap import fill
 from turtle import Turtle, Screen, colormode as turtle_set_colormode
 import random
 
-NUM_OF_TURTLES = 8
+NUM_OF_TURTLES = 10
 drawing_turtle = Turtle()
 drawing_turtle.hideturtle()
 drawing_turtle.speed("fastest")
 turtle_colors = [
     "blue",
-    "deep sky blue",
-    "cyan",
-    "pale green",
-    "spring green",
-    "lime",
-    "orange red",
-    "salmon",
-    "blue violet",
-    "lavender"
+    "yellow",
+    "red",
+    "orange",
+    "purple",
+    "green",
+    "black",
+    "brown",
+    "pink",
+    "gray"
 ]
 
 def fill_turtle_list():
@@ -27,8 +27,8 @@ def fill_turtle_list():
         turtle.speed("fastest")
         turtle.color(get_random_color())
         turtle.pu()
-        x_coord = -screen.screensize()[0] - 50
-        y_coord = NUM_OF_TURTLES * 50 / 2 - i * 50
+        x_coord = -screen.screensize()[0] / 2 + 25
+        y_coord = NUM_OF_TURTLES * 50 / 2 - i * 50 - 25
         turtle.setposition(x_coord, y_coord)
         turtle_list.append(turtle)
 
@@ -38,17 +38,21 @@ def advance_turtles_list():
         for turtle in turtle_list:
             if not advance_turtle(turtle):
                 winner = turtle
-                print(winner.color())
+    return winner
 
 def draw_track(num_of_participants):
     color = "burlywood"
-    x_coord = -screen.screensize()[0] - 50
+    x_coord = -screen.screensize()[0] / 2
     for i in range(num_of_participants):
         color = "navajo white" if color == "burlywood" else "burlywood"
-        y_coord = NUM_OF_TURTLES * 50 / 2 - i * 50 - 25
-        draw_rectangle((x_coord, y_coord), screen.screensize()[0]*2, 50, color)
+        y_coord = NUM_OF_TURTLES * 50 / 2 - i * 50 - 50
+        draw_rectangle((x_coord, y_coord), screen.screensize()[0], 50, color)
+
+        drawing_turtle.goto((x_coord + 10, y_coord + 17))
+        drawing_turtle.write(str(i + 1))
+        
     color = "burlywood"
-    x_coord += screen.screensize()[0]*2
+    x_coord += screen.screensize()[0] - 50
     draw_rectangle((x_coord, y_coord), 50, 50 * num_of_participants, "light sea green")
 
 # ->,^,<-,v 
@@ -64,7 +68,7 @@ def draw_rectangle(initial_xy, width, height, color):
     drawing_turtle.end_fill()
 
 def advance_turtle(turtle):
-    if turtle.pos()[0] < screen.screensize()[0] + 50:
+    if turtle.pos()[0] < screen.screensize()[0] / 2 - 50:
         distance = random.randint(1, 10)
         turtle.fd(distance)
         return True
@@ -86,14 +90,24 @@ def main():
     response = screen.textinput(title="Make your bet", prompt=f"Which turtle will win the race? Enter a number from 1-{NUM_OF_TURTLES}")
     turtle_set_colormode(255)
     screen.bgcolor((211, 211, 211))
+    screen.setup(width = 910, height = 510)
+    width = 900
+    coord_x = width / 2
+    height = NUM_OF_TURTLES * 50
+    coord_y = height / 2
+    screen.screensize(width, height)
+    draw_rectangle((-coord_x, -coord_y), width, height, "white")
 
     # my_turtle = Turtle()
     # my_turtle.write("1aadsfdgsgewg34670")
     # draw_rectangle((0,0), 100, 100, "white")
+    
+    # screen.onkey(key="space", fun=advance_turtles_list)
+
     draw_track(NUM_OF_TURTLES)
     fill_turtle_list()
-    # screen.onkey(key="space", fun=advance_turtles_list)
-    advance_turtles_list()
+    winner = advance_turtles_list()
+    print(f"The winner is #{turtle_list.index(winner)}")
 
     screen.exitonclick()
 
