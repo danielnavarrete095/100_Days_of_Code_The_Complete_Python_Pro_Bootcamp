@@ -1,8 +1,10 @@
 from turtle import Turtle
 import json
-HIGH_SCORE_F = "high_score.json"
+from pathlib import Path
 ALIGNMENT = "center"
 FONT = "Calibri", 15, "bold"
+PATH = str(Path(__file__).parent.absolute())
+HIGH_SCORE_F = PATH + r"\high_score.json"
 class Scoreboard(Turtle):
     def __init__(self, y):
         super().__init__()
@@ -41,6 +43,15 @@ class Scoreboard(Turtle):
             file.write(json_string)
     
     def read_high_score(self):
-        with open(HIGH_SCORE_F, "r") as file:
-            highscore = json.load(file)
-        return highscore["highscore"]
+        high_score = 0
+        try:
+            with open(HIGH_SCORE_F, "r") as file:
+                    highscore = json.load(file)
+                    high_score = highscore["highscore"]
+        except FileNotFoundError:
+            print("File doesn't exist, creating...")
+            self.high_score = 0
+            self.save_high_score()
+        except json.JSONDecodeError:
+            print('Decoding JSON has failed')
+        return high_score
