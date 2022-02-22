@@ -15,10 +15,14 @@ paddle_left = None
 def set_key_bindings():
     global screen, paddle_right, paddle_left
     screen.listen()
-    screen.onkey(key="Up", fun=paddle_right.move_up)
-    screen.onkey(key="Down", fun=paddle_right.move_down)
-    screen.onkey(key="w", fun=paddle_left.move_up)
-    screen.onkey(key="s", fun=paddle_left.move_down)
+    screen.onkeypress(key="Up", fun=paddle_right.set_moving_up)
+    screen.onkeypress(key="Down", fun=paddle_right.set_moving_down)
+    screen.onkeypress(key="w", fun=paddle_left.set_moving_up)
+    screen.onkeypress(key="s", fun=paddle_left.set_moving_down)
+    screen.onkeyrelease(key="Up", fun=paddle_right.reset_moving)
+    screen.onkeyrelease(key="Down", fun=paddle_right.reset_moving)
+    screen.onkeyrelease(key="w", fun=paddle_left.reset_moving)
+    screen.onkeyrelease(key="s", fun=paddle_left.reset_moving)
 
 def main():
     global screen, paddle_right, paddle_left
@@ -28,8 +32,8 @@ def main():
     screen.bgcolor("black")
     screen.tracer(0)
     
-    paddle_right = Paddle(360, 0)
-    paddle_left = Paddle(-380, 0)
+    paddle_right = Paddle(370, 0, MAX_Y)
+    paddle_left = Paddle(-380, 0, MAX_Y)
     
     ball = Ball(0, 0)
     set_key_bindings()
@@ -39,16 +43,19 @@ def main():
         screen.update()
         if not ball.dir_changed:
             if detect_wall_collision(ball, MAX_Y):
-                ball.bounce()
+                ball.bounce_y()
                 ball.dir_changed = False
-        if detect_paddle_collision(ball, paddle_right):
-            print("Right paddle collision")
-            break
-        if detect_paddle_collision(ball, paddle_left):
-            print("Left paddle collision")
-            break
+            if detect_paddle_collision(ball):
+                ball.bounce_x()
+                ball.dir_changed = False
         ball.move()
-        time.sleep(0.1)
+        paddles = (paddle_left, paddle_right)
+        for paddle in paddles:
+            if paddle.moving == "up":
+                paddle.move_up()
+            elif paddle.moving == "down":
+                paddle.move_down()
+        time.sleep(0.005)
 
     screen.exitonclick()
 
@@ -60,14 +67,20 @@ def detect_wall_collision(ball, y_border):
         return True
     return False
 
-def detect_paddle_collision(ball, paddle):
-    x_ball = abs(ball.pos()[0])
-    y_ball = abs(ball.pos()[1])
-    x_paddle = abs(paddle.pos()[0])
-    y_paddle = abs(paddle.pos()[1])
-    if x_ball >= x_paddle and \
-        (y_ball <= y_paddle + 50 or y_ball >= - y_paddle + 50):
-        ball.dir_changed = False
+def detect_paddle_collision(ball):
+    x_ball = ball.pos()[0]
+    y_ball = ball.pos()[1]
+    x_paddle_r = paddle_right.pos()[0]
+    x_paddle_l = paddle_left.pos()[0]
+
+#Detect collision witth right paddle
+    if x_ball >= x_paddle_r - 20 and \
+        ball.distance(paddle_right) <= 50:
+            print("Right paddle collision")
+            return True
+#Detect collision witth left paddle
+    if x_ball <= x_paddle_l + 20 and \
+        ball.distance(paddle_left) <= 50:
         return True
     return False
 

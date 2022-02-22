@@ -11,13 +11,20 @@ class Ball(Turtle):
         self.shape("circle")
         self.setpos(pos_x, pos_y)
         self.shapesize(HEIGHT_FACTOR, WIDTH_FACTOR, 0)
-        self.angle = 85
+        self.angle = 45
         self.dir_changed = False
 
     def move(self):
         self.setheading(self.angle)
-        self.fd(15)
+        self.fd(5)
         
-    def bounce(self):
-            self.angle = 360 - self.angle
-            self.dir_changed = True
+    def bounce_y(self):
+        self.angle = 360 - self.angle
+        self.dir_changed = True
+    def bounce_x(self):
+        if self.angle <= 180:
+            self.angle = 180 - self.angle
+        else:
+            self.angle = (360 - self.angle) + 180
+        self.dir_changed = True
+            
