@@ -9,6 +9,8 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 MAX_X = SCREEN_WIDTH / 2 - 5
 MAX_Y = SCREEN_HEIGHT / 2 - 5
+BALL_SPEED_INIT = 5
+BALL_SPEED_INC = 0.1
 screen = None
 paddle_right = None
 paddle_left = None
@@ -65,6 +67,7 @@ def reset_game():
     paddle_right.home()
     paddle_left.home()
     ball.home()
+    ball.moving_speed = BALL_SPEED_INIT
 
 def main():
     global screen, paddle_right, paddle_left, ball, scoreboard
@@ -78,7 +81,7 @@ def main():
     
     paddle_right = Paddle(370, 0, MAX_Y)
     paddle_left = Paddle(-380, 0, MAX_Y)
-    ball = Ball(0, 0)
+    ball = Ball(0, 0, BALL_SPEED_INIT)
     set_key_bindings()
 
     game_is_on = True
@@ -91,6 +94,8 @@ def main():
             if detect_paddle_collision(ball):
                 ball.bounce_x()
                 ball.dir_changed = False
+                ball.moving_speed += BALL_SPEED_INC
+                print(f"New ball speed: {ball.moving_speed}")
         
         #detect out of bounds
         if detect_out_of_bounds(ball):
@@ -100,8 +105,6 @@ def main():
             else:
                 scoreboard.update(r_score=True)
             reset_game()
-            ball.moving_speed += 0.5
-            print(f"New ball speed: {ball.moving_speed}")
             ball.angle += 180
             time.sleep(0.5)
         
