@@ -12,10 +12,16 @@ class Paddle(Turtle):
         self.pu()
         self.color("white")
         self.shape("square")
-        self.setpos(pos_x, pos_y)
+        self.x_start = pos_x
+        self.y_start = pos_y
+        self.home()
         self.shapesize(HEIGHT_FACTOR, WIDTH_FACTOR, 0)
         self.bound_y = bound_y
         self.moving = None
+
+    def home(self):
+        super().home()
+        self.setpos(self.x_start, self.y_start)
 
     def move_up(self):
         if self.pos()[1] < self.bound_y - HEIGHT / 2 - 10:

@@ -9,14 +9,21 @@ class Ball(Turtle):
         self.pu()
         self.color("white")
         self.shape("circle")
-        self.setpos(pos_x, pos_y)
+        self.x_start = pos_x
+        self.y_start = pos_y
+        self.home()
         self.shapesize(HEIGHT_FACTOR, WIDTH_FACTOR, 0)
-        self.angle = 45
+        self.angle = -45
         self.dir_changed = False
+        self.moving_speed = 5
+
+    def home(self):
+        super().home()
+        self.setpos(self.x_start, self.y_start)
 
     def move(self):
         self.setheading(self.angle)
-        self.fd(5)
+        self.fd(self.moving_speed)
         
     def bounce_y(self):
         self.angle = 360 - self.angle

@@ -2,6 +2,7 @@ from socket import gethostbyname_ex
 from turtle import Screen
 from paddle import Paddle
 from ball import Ball
+from scoreboard import Scoreboard
 import time
 
 SCREEN_WIDTH = 800
@@ -11,6 +12,8 @@ MAX_Y = SCREEN_HEIGHT / 2 - 5
 screen = None
 paddle_right = None
 paddle_left = None
+ball = None
+scoreboard = None
 
 def set_key_bindings():
     global screen, paddle_right, paddle_left
@@ -23,41 +26,6 @@ def set_key_bindings():
     screen.onkeyrelease(key="Down", fun=paddle_right.reset_moving)
     screen.onkeyrelease(key="w", fun=paddle_left.reset_moving)
     screen.onkeyrelease(key="s", fun=paddle_left.reset_moving)
-
-def main():
-    global screen, paddle_right, paddle_left
-    screen = Screen()
-    screen.setup(width=SCREEN_WIDTH, height=SCREEN_HEIGHT)
-    screen.title("Pong game 🎾🕹")
-    screen.bgcolor("black")
-    screen.tracer(0)
-    
-    paddle_right = Paddle(370, 0, MAX_Y)
-    paddle_left = Paddle(-380, 0, MAX_Y)
-    
-    ball = Ball(0, 0)
-    set_key_bindings()
-
-    game_is_on = True
-    while(game_is_on):
-        screen.update()
-        if not ball.dir_changed:
-            if detect_wall_collision(ball, MAX_Y):
-                ball.bounce_y()
-                ball.dir_changed = False
-            if detect_paddle_collision(ball):
-                ball.bounce_x()
-                ball.dir_changed = False
-        ball.move()
-        paddles = (paddle_left, paddle_right)
-        for paddle in paddles:
-            if paddle.moving == "up":
-                paddle.move_up()
-            elif paddle.moving == "down":
-                paddle.move_down()
-        time.sleep(0.005)
-
-    screen.exitonclick()
 
 def detect_wall_collision(ball, y_border):
     y_ball = ball.pos()[1]
@@ -83,6 +51,70 @@ def detect_paddle_collision(ball):
         ball.distance(paddle_left) <= 50:
         return True
     return False
+
+def detect_out_of_bounds(ball):
+    x_ball = ball.pos()[0]
+    if x_ball > 0 and x_ball >= MAX_X - 20:
+        return True
+    if x_ball < 0 and x_ball <= -MAX_X + 10:
+        return True
+    return False
+
+def reset_game():
+    global screen, paddle_right, paddle_left, ball
+    paddle_right.home()
+    paddle_left.home()
+    ball.home()
+
+def main():
+    global screen, paddle_right, paddle_left, ball, scoreboard
+    screen = Screen()
+    screen.setup(width=SCREEN_WIDTH, height=SCREEN_HEIGHT)
+    screen.title("Pong game 🎾🕹")
+    screen.bgcolor("black")
+    screen.tracer(0)
+    
+    scoreboard = Scoreboard(MAX_X, MAX_Y)
+    
+    paddle_right = Paddle(370, 0, MAX_Y)
+    paddle_left = Paddle(-380, 0, MAX_Y)
+    ball = Ball(0, 0)
+    set_key_bindings()
+
+    game_is_on = True
+    while(game_is_on):
+        screen.update()
+        if not ball.dir_changed:
+            if detect_wall_collision(ball, MAX_Y):
+                ball.bounce_y()
+                ball.dir_changed = False
+            if detect_paddle_collision(ball):
+                ball.bounce_x()
+                ball.dir_changed = False
+        
+        #detect out of bounds
+        if detect_out_of_bounds(ball):
+            # game_is_on = False
+            if ball.pos()[0] > 0:
+                scoreboard.update(l_score=True)
+            else:
+                scoreboard.update(r_score=True)
+            reset_game()
+            ball.moving_speed += 0.5
+            print(f"New ball speed: {ball.moving_speed}")
+            ball.angle += 180
+            time.sleep(0.5)
+        
+        ball.move()
+        paddles = (paddle_left, paddle_right)
+        for paddle in paddles:
+            if paddle.moving == "up":
+                paddle.move_up()
+            elif paddle.moving == "down":
+                paddle.move_down()
+        time.sleep(0.005)
+
+    screen.exitonclick()
 
 if __name__ == '__main__':
     main()
