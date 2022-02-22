@@ -74,7 +74,6 @@ class Snake:
                 if self.can_turn(dir):
                     self.direction = dir
                     self.dir_attended = False
-
             # else, there is something in queue, make direction = queue and clear queue
             else:
                 self.direction = self.dir_queue
@@ -101,9 +100,8 @@ class Snake:
         segment.setheading(self.directions[direction])
 
     def tail_collision(self):
-        segment_after_tail = self.body[1]
-        for segment in self.body:
-            if segment != segment_after_tail and segment != self.head:
-                if self.head.distance(segment) < 5:
-                    return True
+        tail = self.body[2:]
+        for segment in tail:
+            if self.head.distance(segment) < 5:
+                return True
         return False
