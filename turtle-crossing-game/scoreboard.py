@@ -15,9 +15,10 @@ class Scoreboard(Turtle):
 
     def update(self):
         self.clear()
-        self.text = f"Score: {self.level}"
+        self.text = f"Level: {self.level}"
         self.write(self.text, align=ALIGNMENT, font=FONT)
     
-    def write_centered(self, text, y):
+    def write_centered(self, text, y, color):
         self.home()
+        self.color(color)
         self.write(text, align=ALIGNMENT, font=FONT)

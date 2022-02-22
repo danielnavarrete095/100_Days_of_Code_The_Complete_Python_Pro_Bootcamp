@@ -66,7 +66,7 @@ def main():
             reset_game()
         time.sleep(0.001)
         screen.update()
-    scoreboard.write_centered("GAME OVER", 0)
+    scoreboard.write_centered("GAME OVER", 0, "black")
     screen.exitonclick()
 
 if __name__ == '__main__':
