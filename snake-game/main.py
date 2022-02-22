@@ -87,9 +87,9 @@ def main():
             print("border coillision!")
             game_is_on = False
         # Detect 💥 with tail
-        if my_snake.tail_collision():
-            print("tail coillision!")
-            game_is_on = False
+        # if my_snake.tail_collision():
+        #     print("tail coillision!")
+        #     game_is_on = False
     scoreboard.write_centered("GAME OVER", 0)
     screen.exitonclick()
 if __name__ == '__main__':
