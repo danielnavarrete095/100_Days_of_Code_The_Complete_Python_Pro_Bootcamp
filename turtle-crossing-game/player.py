@@ -21,7 +21,7 @@ class Player(Turtle):
 
     def move(self):
             y = self.pos()[1]
-            self.sety(y + 5)
+            self.sety(y + 3)
 
     def set_moving(self):
         self.moving = True

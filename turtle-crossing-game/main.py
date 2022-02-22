@@ -15,11 +15,8 @@ scoreboard = None
 
 def detect_collision():
     global player, carmanager
-    player_x = player.pos()[0]
     for car in carmanager.cars:
-        car_x = car.pos()[0]
-        if player_x - 10 >= car_x - 25 and player_x + 10 <= car_x + 25 and\
-            player.distance(car) < 20:
+        if car.distance(player) < 30:
             return True
     return False
 
@@ -63,9 +60,11 @@ def main():
             game_is_on = False
         if level_passed():
             scoreboard.level += 1
+            carmanager.car_speed += 1
+            print(f"New car speed: {carmanager.car_speed}")
             scoreboard.update()
             reset_game()
-        time.sleep(0.01)
+        time.sleep(0.001)
         screen.update()
     scoreboard.write_centered("GAME OVER", 0)
     screen.exitonclick()

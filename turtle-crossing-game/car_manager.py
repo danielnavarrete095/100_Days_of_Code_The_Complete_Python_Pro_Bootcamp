@@ -16,6 +16,7 @@ class CarManager:
     def __init__(self) -> None:
         self.cars = []
         self.last_lane = None
+        self.car_speed = 5
     
     def create_car(self):
         random_lane = random.randint(1, NUMBER_OF_LANES)
@@ -27,13 +28,21 @@ class CarManager:
         init_x = MAX_X + CAR_SIZE[0]
         init_y = STARTING_Y + random_lane * LANE_SIZE
         color = random.choice(COLORS)
-        car = Car(init_x, init_y, color)
+        car = Car(init_x, init_y, color, self.car_speed)
 
-        # create car if latest already advanced enough
         if len(self.cars) > 0:
-            if self.last.pos()[0] < init_x - 25:
-                self.cars.append(car)
-                self.last = car
+            # if self.last.pos()[0] < init_x - 25:
+            #     self.cars.append(car)
+            #     self.last = car
+        
+            # create car randomnly
+            chances = 3
+            random_chance = random.randint(1, chances)
+            if random_chance == 1:
+                # create car if latest already advanced enough
+                if self.last.pos()[0] < init_x - 50:
+                    self.cars.append(car)
+                    self.last = car
         else:
             self.cars.append(car)
             self.last = car
