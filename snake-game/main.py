@@ -64,7 +64,7 @@ def main():
     game_is_on = True
     while(game_is_on):
         my_snake.move()
-        time.sleep(0.1)
+        time.sleep(0.08)
         screen.update()
 
         # Detect 💥 with food

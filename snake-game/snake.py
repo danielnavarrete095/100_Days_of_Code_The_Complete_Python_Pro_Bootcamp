@@ -9,6 +9,7 @@ class Snake:
         self.size = size
         self.shape = shape
         self.direction = "right"
+        self.dir_queue = None
         self.SEGMENT_SIZE = 20
         self.head = None
         self.head = None
@@ -49,19 +50,41 @@ class Snake:
                 if direction != segment_direction:
                     self.set_segment_direction(segment, direction)
                 segment.fd(self.SEGMENT_SIZE)
+                self.dir_attended = True
             # body should occupy previous segment position
             else:
                 segment.setpos(new_x, new_y)
         
     def set_direction(self, dir):
-        direction = self.direction
-        # If direction is right or left can only change to up/down
-        if(direction == "right" or direction == "left") and (dir == "up" or dir == "down"):
-            self.direction = dir
-        # If direction is up or down can only change to right/left
-        elif(direction == "up" or direction == "down") and (dir == "right" or dir == "left"):
-            self.direction = dir
-    
+        # If direction was already attended
+        if self.dir_attended:
+            # If there's no dir in queue, change direction
+            if self.dir_queue == None:
+                direction = self.direction
+                # If direction is right or left can only change to up/down
+                if(direction == "right" or direction == "left") and (dir == "up" or dir == "down"):
+                    self.direction = dir
+                    self.dir_attended = False
+                # If direction is up or down can only change to right/left
+                elif(direction == "up" or direction == "down") and (dir == "right" or dir == "left"):
+                    self.direction = dir
+                    self.dir_attended = False
+            # else, there is something in queue, make direction = queue and clear queue
+            else:
+                self.direction = self.dir_queue
+                self.dir_attended = False
+                self.dir_queue = None
+        # else, save direction in queue
+        else:
+            direction = self.direction
+            # If direction is right or left can only change to up/down
+            if dir != self.direction:
+                if(direction == "right" or direction == "left") and (dir == "up" or dir == "down"):
+                    self.dir_queue = dir
+                # If direction is up or down can only change to right/left
+                elif(direction == "up" or direction == "down") and (dir == "right" or dir == "left"):
+                    self.dir_queue = dir
+
     def grow(self):
         # create new segment
         new_segment = self.create_segment()
@@ -73,7 +96,7 @@ class Snake:
         for dir in self.directions:
             if self.directions[dir] == segment_direction:
                 return dir
-                
+
     def set_segment_direction(self, segment, direction):
         segment.setheading(self.directions[direction])
 
