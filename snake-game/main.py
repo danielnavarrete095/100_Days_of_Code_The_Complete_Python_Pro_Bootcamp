@@ -83,13 +83,13 @@ def main():
         head_y = abs(my_snake.head.pos()[1])
         distance_x_border = abs(MAX_X) - head_x
         distance_y_border = abs(MAX_Y) - head_y
-        if distance_x_border < 20 or distance_y_border < 20:
+        if distance_x_border < 15 or distance_y_border < 15:
             print("border coillision!")
             game_is_on = False
         # Detect 💥 with tail
-        # if my_snake.tail_collision():
-        #     print("tail coillision!")
-        #     game_is_on = False
+        if my_snake.tail_collision():
+            print("tail coillision!")
+            game_is_on = False
     scoreboard.write_centered("GAME OVER", 0)
     screen.exitonclick()
 if __name__ == '__main__':

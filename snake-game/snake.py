@@ -78,7 +78,9 @@ class Snake:
         segment.setheading(self.directions[direction])
 
     def tail_collision(self):
+        segment_after_tail = self.body[1]
         for segment in self.body:
-            if self.head.distance(segment) < 5:
-                return True
+            if segment != segment_after_tail and segment != self.head:
+                if self.head.distance(segment) < 5:
+                    return True
         return False
