@@ -54,21 +54,27 @@ class Snake:
             # body should occupy previous segment position
             else:
                 segment.setpos(new_x, new_y)
-        
+
+    def can_turn(self, new_dir):
+        direction = self.direction
+        # If direction is right or left can only change to up/down
+        # If direction is up or down can only change to right/left
+        if((direction == "right" or direction == "left") and\
+          (new_dir == "up" or new_dir == "down")) or\
+          ((direction == "up" or direction == "down") and\
+          (new_dir == "right" or new_dir == "left")):
+            return True
+        return False
+
     def set_direction(self, dir):
         # If direction was already attended
         if self.dir_attended:
             # If there's no dir in queue, change direction
             if self.dir_queue == None:
-                direction = self.direction
-                # If direction is right or left can only change to up/down
-                if(direction == "right" or direction == "left") and (dir == "up" or dir == "down"):
+                if self.can_turn(dir):
                     self.direction = dir
                     self.dir_attended = False
-                # If direction is up or down can only change to right/left
-                elif(direction == "up" or direction == "down") and (dir == "right" or dir == "left"):
-                    self.direction = dir
-                    self.dir_attended = False
+
             # else, there is something in queue, make direction = queue and clear queue
             else:
                 self.direction = self.dir_queue
@@ -76,14 +82,8 @@ class Snake:
                 self.dir_queue = None
         # else, save direction in queue
         else:
-            direction = self.direction
-            # If direction is right or left can only change to up/down
-            if dir != self.direction:
-                if(direction == "right" or direction == "left") and (dir == "up" or dir == "down"):
-                    self.dir_queue = dir
-                # If direction is up or down can only change to right/left
-                elif(direction == "up" or direction == "down") and (dir == "right" or dir == "left"):
-                    self.dir_queue = dir
+            if self.can_turn(dir):
+                self.dir_queue = dir
 
     def grow(self):
         # create new segment
