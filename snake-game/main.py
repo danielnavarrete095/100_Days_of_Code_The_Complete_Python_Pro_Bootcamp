@@ -3,6 +3,7 @@ from snake import Snake
 import time
 from food import Food
 from random import randint, choice as ranchoice
+from scoreboard import Scoreboard
 
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
@@ -57,6 +58,8 @@ def main():
     food_pos = get_food_random_place()
     food = Food(food_pos[0], food_pos[1])
 
+    scoreboard = Scoreboard(MAX_Y)
+
     # start game
     game_is_on = True
     while(game_is_on):
@@ -64,7 +67,7 @@ def main():
         time.sleep(0.1)
         screen.update()
 
-        # Detect collision with food
+        # Detect 💥 with food
         distance_to_food = my_snake.head.distance(food)
         if distance_to_food < 15:
             print("food coillision!")
@@ -73,19 +76,21 @@ def main():
             food.setpos(food_pos[0], food_pos[1])
             # Grow snake
             my_snake.grow()
-        # Detect collision borders
-        distance_to_border_x = MAX_X - my_snake.head.pos()[0]
-        distance_to_border_y = MAX_Y - my_snake.head.pos()[1]
-        if distance_to_border_x < 5 or distance_to_border_y < 5:
+            scoreboard.score += 1
+            scoreboard.update()
+        # Detect 💥 with borders
+        head_x = abs(my_snake.head.pos()[0])
+        head_y = abs(my_snake.head.pos()[1])
+        distance_x_border = abs(MAX_X) - head_x
+        distance_y_border = abs(MAX_Y) - head_y
+        if distance_x_border < 20 or distance_y_border < 20:
             print("border coillision!")
-            drawing_turtle = Turtle()
-            drawing_turtle.hideturtle()
-            drawing_turtle.speed("fastest")
-            drawing_turtle.pu()
-            drawing_turtle.home()
-            drawing_turtle.color("white")
-            drawing_turtle.write("Game over!")
-            break
+            game_is_on = False
+        # Detect 💥 with tail
+        if my_snake.tail_collision():
+            print("tail coillision!")
+            game_is_on = False
+    scoreboard.write_centered("GAME OVER", 0)
     screen.exitonclick()
 if __name__ == '__main__':
     main()
