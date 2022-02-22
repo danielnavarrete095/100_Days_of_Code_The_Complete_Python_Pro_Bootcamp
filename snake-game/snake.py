@@ -105,3 +105,15 @@ class Snake:
             if self.head.distance(segment) < 5:
                 return True
         return False
+
+    def reset(self, size):
+        for segment in self.body:
+            segment.setpos(1000, 1000)
+        self.body.clear()
+        self.size = size
+        self.direction = "right"
+        self.dir_queue = None
+        self.SEGMENT_SIZE = 20
+        self.head = None
+        self.head = None
+        self.create_body()

@@ -36,7 +36,15 @@ def get_food_random_place():
     pos_y = randint(1, max_y_multiple) * 20 * sign
     print(f"Food at: {pos_x}, {pos_y}")
     return (pos_x, pos_y)
+
+def reset_game(snake, food, scoreboard):
+    my_snake.reset(3)
+    food_pos = get_food_random_place()
+    food.setpos(food_pos[0], food_pos[1])
+    scoreboard.reset()
+    scoreboard.update()
     
+
 def main():
     global my_snake
     screen.setup(width=SCREEN_WIDTH, height=SCREEN_HEIGHT)
@@ -78,19 +86,22 @@ def main():
             my_snake.grow()
             scoreboard.score += 1
             scoreboard.update()
-        # Detect 💥 with borders
-        head_x = abs(my_snake.head.pos()[0])
-        head_y = abs(my_snake.head.pos()[1])
-        distance_x_border = abs(MAX_X) - head_x
-        distance_y_border = abs(MAX_Y) - head_y
-        if distance_x_border < 15 or distance_y_border < 15:
-            print("border coillision!")
-            game_is_on = False
-        # Detect 💥 with tail
-        if my_snake.tail_collision():
-            print("tail coillision!")
-            game_is_on = False
-    scoreboard.write_centered("GAME OVER", 0)
+        # Detect 💥 with tail or borders
+        if my_snake.tail_collision() or border_collision():
+            game_over(my_snake, food, scoreboard)
     screen.exitonclick()
+
+def game_over(snake, food, scoreboard):
+    scoreboard.write_centered("GAME OVER", 0)
+    time.sleep(1)
+    reset_game(snake, food, scoreboard)
+def border_collision():
+    head_x = abs(my_snake.head.pos()[0])
+    head_y = abs(my_snake.head.pos()[1])
+    distance_x_border = abs(MAX_X) - head_x
+    distance_y_border = abs(MAX_Y) - head_y
+    if distance_x_border < 15 or distance_y_border < 15:
+        return True
+    return False
 if __name__ == '__main__':
     main()
