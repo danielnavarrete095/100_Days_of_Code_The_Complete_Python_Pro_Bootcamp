@@ -31,9 +31,10 @@ def main():
         state = answer
         if answer == "Exit" or answer == "E":
             # generate states_to_learn.csv, contains states which haven't been guessed
-            for state in data_states_list:
-                if state not in right_guesses:
-                    missing_states.append(state)
+            # for state in data_states_list:
+            #     if state not in right_guesses:
+            #         missing_states.append(state)
+            missing_states = [state for state in data_states_list if state not in right_guesses]
             print(missing_states)
             df = pandas.DataFrame(missing_states)
             print(df)
