@@ -35,25 +35,32 @@ def start_timer():
         else:
             return
         if reps == 0:
+            label_title.config(text="Long break", fg=DARK_BLUE)
             count_down(LONG_BREAK_MIN)
         elif reps % 2:
+            label_title.config(text="Short break", fg=LIGHT_BLUE)
             count_down(SHORT_BREAK_MIN)
         else:
+            label_title.config(text="Time to work", fg=RED)
             count_down(WORK_MIN)
         reps -= 1
 
-        
+# ---------------------------- HELPER FUNCTIONS ------------------------------- # 
+def format_time(count_sec):
+    count_min = floor(count_sec / 60);
+    if count_min < 10:
+        count_min = f"0{count_min}"
+    count_sec = count_sec % 60;
+    if count_sec < 10:
+        count_sec = f"0{count_sec}"
+    return f"{count_min}:{count_sec}"
+
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 def count_down(count):
     global reps, timer_started
-    count_min = floor(count / 60);
-    if count_min < 10:
-        count_min = f"0{count_min}"
-    count_sec = count % 60;
-    if count_sec < 10:
-        count_sec = f"0{count_sec}"
-    print(f"{count_min}:{count_sec}")    
-    canvas.itemconfig(timer_label, text=f"{count_min}:{count_sec}")
+    formatted_time = format_time(count)
+    print(formatted_time)
+    canvas.itemconfig(timer_label, text=formatted_time)
     if count > 0:
         count -= 1
         window.after(1000, count_down, count)
@@ -71,7 +78,7 @@ window.title("Pomodoro")
 window.config(padx=100, pady=50, bg=BEIGE)
 window
 
-label_title = Label(text="Timer", fg=LIGHT_BLUE, font=(FONT_NAME, 35, "bold"), bg=BEIGE)
+label_title = Label(text="Time to work", fg=RED, font=(FONT_NAME, 35, "bold"), bg=BEIGE)
 label_title.grid(column=1, row=0)
 
 canvas = Canvas(width=200, height=224, bg=BEIGE, highlightthickness=False)
