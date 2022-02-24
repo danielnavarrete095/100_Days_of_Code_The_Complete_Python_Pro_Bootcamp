@@ -11,11 +11,13 @@ LIGHT_BLUE = "#398AB9"
 BEIGE = "#D8D2CB"
 GRAY = "#EEEEEE"
 FONT_NAME = "Courier"
-WORK_MIN = 1 #25
-SHORT_BREAK_MIN = 2 #5
-LONG_BREAK_MIN = 3 #20
+WORK_MIN = 25
+SHORT_BREAK_MIN = 5
+LONG_BREAK_MIN = 20
 reps = 8
 timer_started = False
+next_title = ()
+next_time = ""
 # ---------------------------- TIMER RESET ------------------------------- #
 def reset_timer():
     global reps, timer_started
@@ -23,37 +25,50 @@ def reset_timer():
         return
     reps = 8
     label_checkmarks["text"] = ""
+    formatted_time = format_time(WORK_MIN * 60)
+    canvas.itemconfig(timer_label, text=formatted_time)
+    label_title.config(text="Time to work", fg=RED)
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 def start_timer():
-    global reps, timer_started
-    work_sec = 2 * 60
-    short_break_sec = 1 * 60
-    long_break_sec = 2 * 60
+    global reps, timer_started, next_title, next_time
+    work_sec = WORK_MIN * 60
+    short_break_sec = SHORT_BREAK_MIN * 60
+    long_break_sec = LONG_BREAK_MIN * 60
     if reps > 0:
         if timer_started == False:
             timer_started = True
         else:
             return
         if reps == 1:
-            label_title.config(text="Long break", fg=DARK_BLUE)
-            count_down(LONG_BREAK_MIN)
+            label_title.config(text="Take a break", fg=DARK_BLUE)
+            count_down(long_break_sec)
         elif reps % 2:
-            label_title.config(text="Short break", fg=LIGHT_BLUE)
-            count_down(SHORT_BREAK_MIN)
+            label_title.config(text="Take a break", fg=LIGHT_BLUE)
+            count_down(short_break_sec)
+            next_time = work_sec
+            next_title = ("Time to work", RED)
         else:
             label_title.config(text="Time to work", fg=RED)
-            count_down(WORK_MIN)
+            count_down(work_sec)
+            next_time = long_break_sec if reps - 1 == 1 else short_break_sec
+            next_title = ("Take a break", DARK_BLUE) if reps - 1 == 1 else ("Take a break", LIGHT_BLUE)
         reps -= 1
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 def count_down(count):
     global reps, timer_started
     formatted_time = format_time(count)
-    print(formatted_time)
+    # print(formatted_time)
     canvas.itemconfig(timer_label, text=formatted_time)
     if count > 0:
         count -= 1
         window.after(1000, count_down, count)
     else:
+        # Change title and timer to upcoming activity
+        if reps > 0:
+            formatted_time = format_time(next_time)
+            canvas.itemconfig(timer_label, text=formatted_time)
+            label_title.config(text=next_title[0], fg=next_title[1])
+
         timer_started = False
         # If work spot is finished
         if reps % 2:
@@ -82,7 +97,7 @@ label_title.grid(column=1, row=0)
 canvas = Canvas(width=200, height=224, bg=BEIGE, highlightthickness=False)
 tomato_img = PhotoImage(file="tomato.png")
 canvas.create_image(100, 112, image=tomato_img)
-timer_label = canvas.create_text(100, 130, text=format_time(WORK_MIN), fill=GRAY, font=(FONT_NAME, 35, "bold"))
+timer_label = canvas.create_text(100, 130, text=format_time(WORK_MIN * 60), fill=GRAY, font=(FONT_NAME, 35, "bold"))
 canvas.grid(column=1, row=1)
 
 button_start = Button(text="Start", bg=GRAY)
