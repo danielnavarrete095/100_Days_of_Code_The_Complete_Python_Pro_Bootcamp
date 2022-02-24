@@ -1,6 +1,9 @@
 
 from tkinter import *
 from math import floor
+from pathlib import Path
+PATH_SCRIPT = str(Path(__file__).parent.absolute())
+IMAGE_PATH = fr'{PATH_SCRIPT}\tomato.png'
 # ---------------------------- CONSTANTS ------------------------------- #
 PINK = "#e2979c"
 RED = "#e7305b"
@@ -95,7 +98,7 @@ label_title = Label(text="Time to work", fg=RED, font=(FONT_NAME, 35, "bold"), b
 label_title.grid(column=1, row=0)
 
 canvas = Canvas(width=200, height=224, bg=BEIGE, highlightthickness=False)
-tomato_img = PhotoImage(file="tomato.png")
+tomato_img = PhotoImage(file=IMAGE_PATH)
 canvas.create_image(100, 112, image=tomato_img)
 timer_label = canvas.create_text(100, 130, text=format_time(WORK_MIN * 60), fill=GRAY, font=(FONT_NAME, 35, "bold"))
 canvas.grid(column=1, row=1)
