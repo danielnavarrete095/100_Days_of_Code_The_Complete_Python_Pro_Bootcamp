@@ -15,11 +15,15 @@ WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 reps = 8
+timer_started = False
 # ---------------------------- TIMER RESET ------------------------------- # 
-
 # ---------------------------- TIMER MECHANISM ------------------------------- # 
 def start_timer():
-    global reps
+    global reps, timer_started
+    if timer_started == False:
+        timer_started = True
+    else:
+        return
     work_sec = 2 * 60
     short_break_sec = 1 * 60
     long_break_sec = 2 * 60
@@ -29,11 +33,13 @@ def start_timer():
         count_down(SHORT_BREAK_MIN)
     else:
         count_down(WORK_MIN)
-    reps -= 1
+    if reps > 0:
+        reps -= 1
 
         
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 def count_down(count):
+    global timer_started
     count_min = floor(count / 60);
     if count_min < 10:
         count_min = f"0{count_min}"
@@ -45,6 +51,8 @@ def count_down(count):
     if count > 0:
         count -= 1
         window.after(1000, count_down, count)
+    else:
+        timer_started = False
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.title("Pomodoro")
