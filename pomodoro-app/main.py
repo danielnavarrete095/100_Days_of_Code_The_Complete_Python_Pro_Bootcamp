@@ -21,6 +21,7 @@ reps = 8
 timer_started = False
 next_title = ()
 next_time = ""
+window = None
 # ---------------------------- TIMER RESET ------------------------------- #
 def reset_timer():
     global reps, timer_started
@@ -58,7 +59,7 @@ def start_timer():
         reps -= 1
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 def count_down(count):
-    global reps, timer_started
+    global reps, timer_started, window
     formatted_time = format_time(count)
     # print(formatted_time)
     canvas.itemconfig(timer_label, text=formatted_time)
@@ -66,6 +67,9 @@ def count_down(count):
         count -= 1
         window.after(1000, count_down, count)
     else:
+        window.attributes("-topmost", True)
+        window.lift()
+        window.attributes("-topmost", False)
         # Change title and timer to upcoming activity
         if reps > 0:
             formatted_time = format_time(next_time)
