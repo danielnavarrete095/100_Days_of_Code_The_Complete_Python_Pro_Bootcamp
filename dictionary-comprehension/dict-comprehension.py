@@ -22,6 +22,46 @@ def main():
     result = {word:len(word) for word in sentence.split()}
     print(result)
 
+    weather_c = {
+        "Monday": 12,
+        "Tuesday": 14,
+        "Wednesday": 15,
+        "Thursday": 14,
+        "Friday": 21,
+        "Saturday": 22,
+        "Sunday": 24,
+    }
+    weather_f = {day:temp* 9 / 5 + 32 for (day, temp) in weather_c.items()}
+    print(weather_f)
 
+    print(f"students_scores: {students_scores}")
+    print(f"students: {students}")
+    scores = [score for (student, score) in students_scores.items()]
+    print(f"scores: {scores}")
+    student_dict = {
+        "student": students,
+        "score": scores
+    }
+    print(student_dict)
+
+    # Looping through dictionaries:
+    for (key, value) in student_dict.items():
+        print(value)
+
+    import pandas
+    student_data_frame = pandas.DataFrame(student_dict)
+    # print(student_data_frame)
+
+    # for (key, value) in student_data_frame.items():
+    #     # print(key)
+    #     print(value)
+    
+    # Loop through rows of a data frame
+    for(index, row) in student_data_frame.iterrows():
+        # print(index)
+        # print(row)
+        if row.student == "Daniel":
+            print(row)
+    
 if __name__ == '__main__':
     main()
