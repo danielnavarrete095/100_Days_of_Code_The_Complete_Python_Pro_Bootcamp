@@ -44,17 +44,6 @@ def start_timer():
             label_title.config(text="Time to work", fg=RED)
             count_down(WORK_MIN)
         reps -= 1
-
-# ---------------------------- HELPER FUNCTIONS ------------------------------- # 
-def format_time(count_sec):
-    count_min = floor(count_sec / 60);
-    if count_min < 10:
-        count_min = f"0{count_min}"
-    count_sec = count_sec % 60;
-    if count_sec < 10:
-        count_sec = f"0{count_sec}"
-    return f"{count_min}:{count_sec}"
-
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 def count_down(count):
     global reps, timer_started
@@ -71,6 +60,15 @@ def count_down(count):
             # print checkmarks in label
             times = [4, 3, 2, 1]
             label_checkmarks["text"] = "✔" * times[int(reps / 2)]
+# ---------------------------- HELPER FUNCTIONS ------------------------------- # 
+def format_time(count_sec):
+    count_min = floor(count_sec / 60);
+    if count_min < 10:
+        count_min = f"0{count_min}"
+    count_sec = count_sec % 60;
+    if count_sec < 10:
+        count_sec = f"0{count_sec}"
+    return f"{count_min}:{count_sec}"
 
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
@@ -84,7 +82,7 @@ label_title.grid(column=1, row=0)
 canvas = Canvas(width=200, height=224, bg=BEIGE, highlightthickness=False)
 tomato_img = PhotoImage(file="tomato.png")
 canvas.create_image(100, 112, image=tomato_img)
-timer_label = canvas.create_text(100, 130, text="00:00", fill=GRAY, font=(FONT_NAME, 35, "bold"))
+timer_label = canvas.create_text(100, 130, text=format_time(WORK_MIN), fill=GRAY, font=(FONT_NAME, 35, "bold"))
 canvas.grid(column=1, row=1)
 
 button_start = Button(text="Start", bg=GRAY)
