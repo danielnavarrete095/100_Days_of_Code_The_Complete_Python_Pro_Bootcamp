@@ -18,19 +18,22 @@ reps = 8
 timer_started = False
 # ---------------------------- TIMER RESET ------------------------------- #
 def reset_timer():
-    global reps
+    global reps, timer_started
+    if timer_started:
+        return
     reps = 8
+    label_checkmarks["text"] = ""
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 def start_timer():
     global reps, timer_started
-    if timer_started == False:
-        timer_started = True
-    else:
-        return
     work_sec = 2 * 60
     short_break_sec = 1 * 60
     long_break_sec = 2 * 60
     if reps >= 0:
+        if timer_started == False:
+            timer_started = True
+        else:
+            return
         if reps == 0:
             count_down(LONG_BREAK_MIN)
         elif reps % 2:
@@ -42,7 +45,7 @@ def start_timer():
         
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 def count_down(count):
-    global timer_started
+    global reps, timer_started
     count_min = floor(count / 60);
     if count_min < 10:
         count_min = f"0{count_min}"
@@ -56,6 +59,12 @@ def count_down(count):
         window.after(1000, count_down, count)
     else:
         timer_started = False
+        # If short break is finished
+        if not reps % 2:
+            # print checkmarks in label
+            times = [4, 3, 2, 1]
+            label_checkmarks["text"] = "✔" * times[int(reps / 2)]
+
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.title("Pomodoro")
@@ -77,7 +86,7 @@ button_start.config(command=start_timer)
 button_reset = Button(text="Reset", bg=GRAY)
 button_reset.grid(column=2, row=2)
 button_reset.config(command=reset_timer)
-label_checkmarks = Label(text="✔✔✔✔", fg=DARK_BLUE, bg=BEIGE, font=(FONT_NAME, 15, "bold"))
+label_checkmarks = Label(text="", fg=DARK_BLUE, bg=BEIGE, font=(FONT_NAME, 15, "bold"))
 label_checkmarks.grid(column=1, row=3)
 # ✔
 window.mainloop()
