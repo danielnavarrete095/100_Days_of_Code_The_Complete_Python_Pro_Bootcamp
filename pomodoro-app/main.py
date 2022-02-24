@@ -11,13 +11,16 @@ LIGHT_BLUE = "#398AB9"
 BEIGE = "#D8D2CB"
 GRAY = "#EEEEEE"
 FONT_NAME = "Courier"
-WORK_MIN = 25
-SHORT_BREAK_MIN = 5
-LONG_BREAK_MIN = 20
+WORK_MIN = 1 #25
+SHORT_BREAK_MIN = 2 #5
+LONG_BREAK_MIN = 3 #20
 reps = 8
 timer_started = False
-# ---------------------------- TIMER RESET ------------------------------- # 
-# ---------------------------- TIMER MECHANISM ------------------------------- # 
+# ---------------------------- TIMER RESET ------------------------------- #
+def reset_timer():
+    global reps
+    reps = 8
+# ---------------------------- TIMER MECHANISM ------------------------------- #
 def start_timer():
     global reps, timer_started
     if timer_started == False:
@@ -27,13 +30,13 @@ def start_timer():
     work_sec = 2 * 60
     short_break_sec = 1 * 60
     long_break_sec = 2 * 60
-    if reps == 0:
-        count_down(LONG_BREAK_MIN)
-    elif reps % 2:
-        count_down(SHORT_BREAK_MIN)
-    else:
-        count_down(WORK_MIN)
-    if reps > 0:
+    if reps >= 0:
+        if reps == 0:
+            count_down(LONG_BREAK_MIN)
+        elif reps % 2:
+            count_down(SHORT_BREAK_MIN)
+        else:
+            count_down(WORK_MIN)
         reps -= 1
 
         
@@ -73,6 +76,7 @@ button_start.grid(column=0, row=2)
 button_start.config(command=start_timer)
 button_reset = Button(text="Reset", bg=GRAY)
 button_reset.grid(column=2, row=2)
+button_reset.config(command=reset_timer)
 label_checkmarks = Label(text="✔✔✔✔", fg=DARK_BLUE, bg=BEIGE, font=(FONT_NAME, 15, "bold"))
 label_checkmarks.grid(column=1, row=3)
 # ✔
