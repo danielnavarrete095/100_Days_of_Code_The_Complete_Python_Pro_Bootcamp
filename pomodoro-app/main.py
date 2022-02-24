@@ -29,12 +29,12 @@ def start_timer():
     work_sec = 2 * 60
     short_break_sec = 1 * 60
     long_break_sec = 2 * 60
-    if reps >= 0:
+    if reps > 0:
         if timer_started == False:
             timer_started = True
         else:
             return
-        if reps == 0:
+        if reps == 1:
             label_title.config(text="Long break", fg=DARK_BLUE)
             count_down(LONG_BREAK_MIN)
         elif reps % 2:
@@ -55,8 +55,8 @@ def count_down(count):
         window.after(1000, count_down, count)
     else:
         timer_started = False
-        # If short break is finished
-        if not reps % 2:
+        # If work spot is finished
+        if reps % 2:
             # print checkmarks in label
             times = [4, 3, 2, 1]
             label_checkmarks["text"] = "✔" * times[int(reps / 2)]
