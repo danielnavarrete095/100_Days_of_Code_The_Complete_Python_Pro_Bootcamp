@@ -1,14 +1,34 @@
-from ctypes import alignment
 from tkinter import *
+from tkinter import messagebox
 from pathlib import Path
 from json import *
+from random import *
 PATH_SCRIPT = str(Path(__file__).parent.absolute())
 IMAGE_PATH = fr'{PATH_SCRIPT}\logo.png'
 FONT = ("Courier", 15, "normal")
 PASSWORD_FILE = fr'{PATH_SCRIPT}\pw.json'
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
+def generate_password():
+    password_entry.delete(0, END)
+    letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
 
+    num_letters = randint(8, 10)
+    num_numbers = randint(2, 4)
+    num_symbols = randint(2, 4)
+    password = ""
+    list_of_chars = [letters, numbers, symbols]
+    password_list = []
+    num_list = [num_letters, num_numbers, num_symbols]
+    for idx, num in enumerate(num_list):
+        for _ in range(num):
+            password_list += choice(list_of_chars[idx])
+    shuffle(password_list)
+    password = "".join(password_list)
+    password_entry.insert(END, string=password)
+    
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def save_password():
     global website_entry, email_entry, password_entry
@@ -16,7 +36,12 @@ def save_password():
     website = website_entry.get()
     email = email_entry.get()
     password = password_entry.get()
-
+    if not website or not email or not password:
+        is_ok = messagebox.showerror(title="Error", message=f"Please fill out all fields")
+        return
+    is_ok = messagebox.askokcancel(title=website, message=f"There are the details entered:\n Email: {email}\n Password: {password}\n Are you sure you want to save?")
+    if not is_ok:
+        return
     # Create a directory
     password_dict = {
         "website": website,
@@ -87,7 +112,7 @@ password_label.grid(column=0, row=3)
 password_entry = Entry(width=23)
 password_entry.grid(column=1, row=3, sticky="W")
 # password Button
-password_button = Button(text="Generate Password")
+password_button = Button(text="Generate Password", command=generate_password)
 password_button.grid(column=2, row=3, sticky="E")
 
 # Add Button
