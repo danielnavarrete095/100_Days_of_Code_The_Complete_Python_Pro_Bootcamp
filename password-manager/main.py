@@ -78,6 +78,56 @@ def save_password():
     website_entry.delete(0, END)
     password_entry.delete(0, END)
 
+def search_password():
+    global website_entry, email_entry, password_entry
+    # Get values from UI
+    website = website_entry.get()
+    if not website:
+        messagebox.showerror(title="Error", message=f"Please provide a website to search for")
+        return
+    # Create an empty directory
+    password_dict = {
+        "website": "",
+        "email": "",
+        "password": "",
+    }
+
+    # Read JSON file
+    passwords_dict = None
+    try:
+        with open(PASSWORD_FILE, "r") as file:
+            passwords_dict = load(file)
+    except FileNotFoundError:
+        messagebox.showerror(title="Error", message=f"There are no passwords saved!")
+        print("File doesn't exist, there are no passwords saved!")
+    except JSONDecodeError:
+        print('Decoding JSON has failed')
+    except Exception as e:
+        print(type(e))
+        print(e.args)
+    if not passwords_dict:
+        return
+    for password in passwords_dict["passwords"]:
+            print(password)
+            if website.lower() == password["website"].lower():
+                email_entry.delete(0, END)
+                email_entry.insert(0, string=password["email"])
+                password_entry.delete(0, END)
+                password_entry.insert(0, string=password["password"])
+                pyperclip.copy(password["password"])
+                return
+    # website not found
+    messagebox.showerror(title="Error", message=f"Password for given email not found!")
+
+
+    # # Write JSON file
+    # passwords_json = dumps(passwords_dict, indent=4)
+    # with open(PASSWORD_FILE, "w") as file:
+    #         file.write(passwords_json)
+
+    # # Clear entry fields
+    # website_entry.delete(0, END)
+    # password_entry.delete(0, END)
 
 # ---------------------------- UI SETUP ------------------------------- #
 # Window
@@ -95,9 +145,12 @@ canvas.create_image(100, 100, image=logo_img)
 website_label = Label(text="Website:", font = FONT)
 website_label.grid(column=0, row=1)
 # website Entry
-website_entry = Entry(width=35)
-website_entry.grid(column=1, row=1, columnspan=2, sticky="EW")
+website_entry = Entry(width=23)
+website_entry.grid(column=1, row=1, columnspan=2, sticky="W")
 website_entry.focus()
+# Search button
+password_button = Button(text="Search", width=14, command=search_password)
+password_button.grid(column=2, row=1, sticky="E")
 
 # email label
 email_label = Label(text="Email/Username:", font = FONT)
