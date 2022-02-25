@@ -119,15 +119,12 @@ def search_password():
     # website not found
     messagebox.showerror(title="Error", message=f"Password for given email not found!")
 
-
-    # # Write JSON file
-    # passwords_json = dumps(passwords_dict, indent=4)
-    # with open(PASSWORD_FILE, "w") as file:
-    #         file.write(passwords_json)
-
-    # # Clear entry fields
-    # website_entry.delete(0, END)
-    # password_entry.delete(0, END)
+def search_keyenter(e):
+    search_password()
+def generate_keyenter(e):
+    generate_password()
+def add_keyenter(e):
+    save_password()
 
 # ---------------------------- UI SETUP ------------------------------- #
 # Window
@@ -151,6 +148,7 @@ website_entry.focus()
 # Search button
 password_button = Button(text="Search", width=14, command=search_password)
 password_button.grid(column=2, row=1, sticky="E")
+password_button.bind("<Return>", search_keyenter)
 
 # email label
 email_label = Label(text="Email/Username:", font = FONT)
@@ -169,10 +167,12 @@ password_entry.grid(column=1, row=3, sticky="W")
 # password Button
 password_button = Button(text="Generate Password", command=generate_password)
 password_button.grid(column=2, row=3, sticky="E")
+password_button.bind("<Return>", generate_keyenter)
 
 # Add Button
 add_button = Button(text="Add", width=35, command=save_password)
 add_button.grid(column=1, row=4, columnspan=2, sticky="EW")
+add_button.bind("<Return>", add_keyenter)
 
 
 
