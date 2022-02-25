@@ -77,7 +77,7 @@ def save_password():
     # Clear entry fields
     website_entry.delete(0, END)
     password_entry.delete(0, END)
-
+# ---------------------------- SEARCH PASSWORD ------------------------------- #
 def search_password():
     global website_entry, email_entry, password_entry
     # Get values from UI
@@ -118,7 +118,7 @@ def search_password():
                 return
     # website not found
     messagebox.showerror(title="Error", message=f"Password for given email not found!")
-
+# ---------------------------- KEY EVENTS ------------------------------- #
 def search_keyenter(e):
     search_password()
 def generate_keyenter(e):
