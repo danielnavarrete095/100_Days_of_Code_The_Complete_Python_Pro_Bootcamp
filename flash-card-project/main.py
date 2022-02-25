@@ -14,10 +14,14 @@ flash_card_canvas = None
 
 def get_random_word():
     global word_text, translation_text, flash_card_canvas
-    word, translation = choice(list(data_dict.items()))
-    print(translation)
+    # word, translation = choice(list(data_dict.items()))
+    word = choice(data_dict)
+    # print(translation)
     print(word)
-    # return (word, translation)
+    return (word["German"], word["English"])
+
+def next_card():
+    word, translation = get_random_word()
     flash_card_canvas.itemconfig(word_text, text=word)
     flash_card_canvas.itemconfig(translation_text, text=translation)
 
@@ -35,17 +39,18 @@ translation_text = flash_card_canvas.create_text(400, 263, text="Word", fill="bl
 
 # buttons
 check_img = PhotoImage(file=CHECK_IMAGE)
-check_button = Button(image=check_img, highlightthickness=0, borderwidth=0, command=get_random_word)
+check_button = Button(image=check_img, highlightthickness=0, borderwidth=0, command=next_card)
 check_button.grid(column=0, row=1)
 cross_img = PhotoImage(file=CROSS_IMAGE)
-cross_button = Button(image=cross_img, highlightthickness=0, borderwidth=0, command=get_random_word)
+cross_button = Button(image=cross_img, highlightthickness=0, borderwidth=0, command=next_card)
 cross_button.grid(column=1, row=1)
 
 
 # Read csv file
 data = read_csv(GERMAN_WORDS_FILE)
 # print(data)
-data_dict = {row.German:row.English for (index, row) in data.iterrows()}
+# data_dict = {row.German:row.English for (index, row) in data.iterrows()}
+data_dict = data.to_dict(orient="records")
 # print(data_dict)
 
 
