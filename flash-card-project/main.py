@@ -22,6 +22,7 @@ current_word = ""
 current_card = {"word": "", "translation": ""}
 front_card_image = None
 back_card_image = None
+flip_timer = None
 
 def get_random_word():
     global word_text, current_card
@@ -34,13 +35,14 @@ def get_random_word():
     # return (word["German"], word["English"])
 
 def next_card():
-    global flash_card_canvas, current_card, front_card_img
+    global flash_card_canvas, current_card, front_card_img, flip_timer
+    flash_card_canvas.after_cancel(flip_timer)
     # word, translation = get_random_word()
     get_random_word()
     flash_card_canvas.itemconfig(image_container,image=front_card_img)
     flash_card_canvas.itemconfig(word_text, text=ORIGIN_LANGUAGE, fill = "black")
     flash_card_canvas.itemconfig(translation_text, text=current_card["word"], fill = "black")
-    flash_card_canvas.after(3000, flip_card)
+    flip_timer = flash_card_canvas.after(3000, flip_card)
 
 def flip_card():
     global flash_card_canvas, current_card, back_card_img
@@ -76,6 +78,7 @@ data = read_csv(GERMAN_WORDS_FILE)
 # data_dict = {row.German:row.English for (index, row) in data.iterrows()}
 data_dict = data.to_dict(orient="records")
 # print(data_dict)
+flip_timer = flash_card_canvas.after(3000, flip_card)
 next_card()
 
 
