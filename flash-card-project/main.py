@@ -18,33 +18,35 @@ translation_text = ""
 flash_card_canvas = None
 current_word = ""
 current_translation = ""
+current_word = ""
+current_card = {"word": "", "translation": ""}
 front_card_image = None
 back_card_image = None
 
 def get_random_word():
-    global word_text, current_word, current_translation
+    global word_text, current_card
     # word, translation = choice(list(data_dict.items()))
     word = choice(data_dict)
     # print(translation)
     print(word)
-    current_word = word["German"]
-    current_translation = word["English"]
+    current_card["word"] = word["German"]
+    current_card["translation"] = word["English"]
     # return (word["German"], word["English"])
 
 def next_card():
-    global flash_card_canvas, current_word, front_card_img
+    global flash_card_canvas, current_card, front_card_img
     # word, translation = get_random_word()
     get_random_word()
     flash_card_canvas.itemconfig(image_container,image=front_card_img)
     flash_card_canvas.itemconfig(word_text, text=ORIGIN_LANGUAGE, fill = "black")
-    flash_card_canvas.itemconfig(translation_text, text=current_word, fill = "black")
+    flash_card_canvas.itemconfig(translation_text, text=current_card["word"], fill = "black")
     flash_card_canvas.after(3000, flip_card)
 
 def flip_card():
-    global flash_card_canvas, current_translation, back_card_img
+    global flash_card_canvas, current_card, back_card_img
     flash_card_canvas.itemconfig(image_container,image=back_card_img)
     flash_card_canvas.itemconfig(word_text, text=TRANSLATION_LANGUAGE, fill = "white")
-    flash_card_canvas.itemconfig(translation_text, text=current_translation, fill = "white")
+    flash_card_canvas.itemconfig(translation_text, text=current_card["translation"], fill = "white")
 
 
 # ---------------------------- UI SETUP ------------------------------- #
