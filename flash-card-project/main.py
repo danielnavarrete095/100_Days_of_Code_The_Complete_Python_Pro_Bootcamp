@@ -36,7 +36,6 @@ flash_card_img = PhotoImage(file = FLASH_CARD_IMAGE)
 flash_card_canvas.create_image(400, 263, image=flash_card_img)
 word_text = flash_card_canvas.create_text(400, 150, text="Language", fill="black", font=(FONT, 40, "italic"))
 translation_text = flash_card_canvas.create_text(400, 263, text="Word", fill="black", font=(FONT, 60, "bold"))
-
 # buttons
 check_img = PhotoImage(file=CHECK_IMAGE)
 check_button = Button(image=check_img, highlightthickness=0, borderwidth=0, command=next_card)
@@ -52,6 +51,7 @@ data = read_csv(GERMAN_WORDS_FILE)
 # data_dict = {row.German:row.English for (index, row) in data.iterrows()}
 data_dict = data.to_dict(orient="records")
 # print(data_dict)
+next_card()
 
 
 window.mainloop()
