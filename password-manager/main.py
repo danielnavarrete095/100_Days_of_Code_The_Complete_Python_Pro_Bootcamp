@@ -30,7 +30,6 @@ def generate_password():
     password = "".join(password_list)
     password_entry.insert(END, string=password)
     pyperclip.copy(password)
-    
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def save_password():
     global website_entry, email_entry, password_entry
@@ -70,9 +69,10 @@ def save_password():
         }
     passwords_dict["passwords"].append(password_dict)
     # Write JSON file
-    passwords_json = dumps(passwords_dict, indent=4)
+    # passwords_json = dumps(passwords_dict, indent=4)
     with open(PASSWORD_FILE, "w") as file:
-            file.write(passwords_json)
+            # file.write(passwords_json)
+            dump(passwords_dict, file, indent=4)
 
     # Clear entry fields
     website_entry.delete(0, END)
