@@ -3,6 +3,7 @@ from tkinter import messagebox
 from pathlib import Path
 from json import *
 from random import *
+import pyperclip
 PATH_SCRIPT = str(Path(__file__).parent.absolute())
 IMAGE_PATH = fr'{PATH_SCRIPT}\logo.png'
 FONT = ("Courier", 15, "normal")
@@ -28,6 +29,7 @@ def generate_password():
     shuffle(password_list)
     password = "".join(password_list)
     password_entry.insert(END, string=password)
+    pyperclip.copy(password)
     
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def save_password():
