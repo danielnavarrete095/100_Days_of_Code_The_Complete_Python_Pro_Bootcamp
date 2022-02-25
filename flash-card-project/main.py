@@ -66,11 +66,20 @@ def event_cross_button():
 def on_closing():
     global window, data_list
     # Save things to learn csv
-    df = DataFrame(data_list)
-    df.to_csv(WORDS_TO_LEARN_FILE, index=False)
     if messagebox.askokcancel("Quit", "Do you want to quit?"):
+        df = DataFrame(data_list)
+        df.to_csv(WORDS_TO_LEARN_FILE, index=False)
         window.destroy()
 
+def read_data_file():
+    global data_list
+    try:
+        data = read_csv(WORDS_TO_LEARN_FILE)
+    except FileNotFoundError:
+        print("File doesn't exit, reading complete data file instead")
+        data = read_csv(GERMAN_WORDS_FILE)
+    data_list = data.to_dict(orient="records")
+    
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.config(padx=50, pady=50, bg=BACKGROUND_COLOR)
@@ -94,11 +103,7 @@ cross_button.grid(column=1, row=1)
 
 
 # Read csv file
-data = read_csv(GERMAN_WORDS_FILE)
-# print(data)
-# data_list = {row.German:row.English for (index, row) in data.iterrows()}
-data_list = data.to_dict(orient="records")
-# print(data_list)
+read_data_file()
 flip_timer = flash_card_canvas.after(3000, flip_card)
 next_card()
 
