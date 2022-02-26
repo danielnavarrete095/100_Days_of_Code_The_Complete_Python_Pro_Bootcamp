@@ -49,13 +49,13 @@ def main():
     while game_is_on:
         if player.moving == True and player.released:
             player.move()
-        carmanager.create_car()
+        if carmanager.can_create_car():
+            carmanager.create_car()
         carmanager.move_cars()
         if not player.released:
-            for car in carmanager.cars:
-                if car.pos()[0] < player.pos()[0]:
-                    print("Player released!")
-                    player.released = True
+            if carmanager.cars[0].pos()[0] < player.pos()[0]:
+                print("Player released!")
+                player.released = True
         if detect_collision():
             game_is_on = False
         if level_passed():

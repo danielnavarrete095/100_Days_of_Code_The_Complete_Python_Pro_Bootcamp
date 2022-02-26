@@ -1,5 +1,6 @@
 import random
 from car import Car
+from collections import deque
 COLORS = ["red", "orange", "yellow", "green", "blue", "purple"]
 STARTING_MOVE_DISTANCE = 5
 MOVE_INCREMENT = 10
@@ -14,7 +15,8 @@ STARTING_Y = -280
 
 class CarManager:
     def __init__(self) -> None:
-        self.cars = []
+        self.cars = deque()
+        # self.cars = []
         self.last_lane = None
         self.car_speed = 5
     
@@ -29,32 +31,31 @@ class CarManager:
         init_y = STARTING_Y + random_lane * LANE_SIZE
         color = random.choice(COLORS)
         car = Car(init_x, init_y, color, self.car_speed)
+        self.cars.append(car)
 
-        if len(self.cars) > 0:
-            # if self.last.pos()[0] < init_x - 25:
-            #     self.cars.append(car)
-            #     self.last = car
         
+    def can_create_car(self):
+        init_x = MAX_X + CAR_SIZE[0]
+        if len(self.cars) > 0:
             # create car randomnly
             chances = 3
             random_chance = random.randint(1, chances)
             if random_chance == 1:
                 # create car if latest already advanced enough
-                if self.last.pos()[0] < init_x - 50:
-                    self.cars.append(car)
-                    self.last = car
+                if self.cars[-1].pos()[0] < init_x - 50:
+                    return True
         else:
-            self.cars.append(car)
-            self.last = car
-
+            return True
+        return False
     
     def move_cars(self):
-        # if len(self.cars) < 50:
-        #     self.create_car()
+        if self.out_of_bounds(self.cars[0]):
+            # print(len(self.cars))
+            self.cars.popleft()
         for car in self.cars:
-            if self.out_of_bounds(car):
-                self.cars.remove(car) 
-            else:
+            # if self.out_of_bounds(car):
+            #     self.cars.remove(car) 
+            # else:
                 car.move()
     
     def out_of_bounds(self, car):
