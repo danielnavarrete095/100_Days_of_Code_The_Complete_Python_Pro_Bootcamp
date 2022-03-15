@@ -1,14 +1,15 @@
 import datetime as dt
 import requests
+from keys import *
 
 STOCK = "TSLA"
 COMPANY_NAME = "Tesla"
 
 STOCK_API = "https://www.alphavantage.co/query"
-STOCK_API_KEY = "RD8746UXYE1RDCJ7"
+
 
 NEWS_API = "https://newsapi.org/v2/everything"
-NEWS_API_KEY = "7ad6a271238942d09b550868c40a42b1"
+
 
 def get_trading_date(offset = 0):
     today = dt.datetime.today()
@@ -39,27 +40,29 @@ print(yesterday_close_price)
 print(dby_close_price)
 threshold = yesterday_close_price * 0.03
 delta = dby_close_price - yesterday_close_price
+get_news = False
 if abs(delta) > threshold:
-    print("Get News")
+    get_news = True
 
 ## STEP 2: Use https://newsapi.org
 # Instead of printing ("Get News"), actually get the first 3 news pieces for the COMPANY_NAME. 
-req_params = {
-    "function": "TIME_SERIES_DAILY",
-    "q": COMPANY_NAME,
-    "apikey": NEWS_API_KEY,
-    "searchIn": "title",
-    "from": "2022-03-11",
-    "language": "en",
-    "sortBy": "publishedAt",
-}
-response = requests.get(NEWS_API, params=req_params)
-response.raise_for_status()
-total_results = response.json()["totalResults"]
-results = response.json()["articles"]
-if total_results > 3:
-    top_results = results[:3]
-print(top_results)
+if get_news:
+    req_params = {
+        "function": "TIME_SERIES_DAILY",
+        "q": COMPANY_NAME,
+        "apikey": NEWS_API_KEY,
+        "searchIn": "title",
+        "from": day_before_yesterday_date,
+        "language": "en",
+        "sortBy": "publishedAt",
+    }
+    response = requests.get(NEWS_API, params=req_params)
+    response.raise_for_status()
+    total_results = response.json()["totalResults"]
+    results = response.json()["articles"]
+    if total_results > 3:
+        top_results = results[:3]
+        print(top_results)
 ## STEP 3: Use https://www.twilio.com
 # Send a seperate message with the percentage change and each article's title and description to your phone number. 
 
