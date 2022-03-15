@@ -1,12 +1,65 @@
+import datetime as dt
+import requests
+
 STOCK = "TSLA"
-COMPANY_NAME = "Tesla Inc"
+COMPANY_NAME = "Tesla"
+
+STOCK_API = "https://www.alphavantage.co/query"
+STOCK_API_KEY = "RD8746UXYE1RDCJ7"
+
+NEWS_API = "https://newsapi.org/v2/everything"
+NEWS_API_KEY = "7ad6a271238942d09b550868c40a42b1"
+
+def get_trading_date(offset = 0):
+    today = dt.datetime.today()
+    #check for weekends
+    offset_date = today - dt.timedelta(days = offset)
+    while offset_date.isoweekday() in [6, 7]:
+        offset +=1
+        offset_date = today - dt.timedelta(days = offset)
+
+    return ("{}-{:0>2}-{:0>2}".format(offset_date.year, offset_date.month, offset_date.day))
+
 
 ## STEP 1: Use https://www.alphavantage.co
 # When STOCK price increase/decreases by 5% between yesterday and the day before yesterday then print("Get News").
+req_params = {
+    "function": "TIME_SERIES_DAILY",
+    "symbol": STOCK,
+    "apikey": STOCK_API_KEY,
+}
+response = requests.get(STOCK_API, req_params)
+response.raise_for_status()
+stock_data = response.json()["Time Series (Daily)"]
+yesterdays_date = get_trading_date(1)
+day_before_yesterday_date = get_trading_date(2)
+yesterday_close_price = float(stock_data[yesterdays_date]["4. close"])
+dby_close_price = float(stock_data[day_before_yesterday_date]["4. close"])
+print(yesterday_close_price)
+print(dby_close_price)
+threshold = yesterday_close_price * 0.03
+delta = dby_close_price - yesterday_close_price
+if abs(delta) > threshold:
+    print("Get News")
 
 ## STEP 2: Use https://newsapi.org
 # Instead of printing ("Get News"), actually get the first 3 news pieces for the COMPANY_NAME. 
-
+req_params = {
+    "function": "TIME_SERIES_DAILY",
+    "q": COMPANY_NAME,
+    "apikey": NEWS_API_KEY,
+    "searchIn": "title",
+    "from": "2022-03-11",
+    "language": "en",
+    "sortBy": "publishedAt",
+}
+response = requests.get(NEWS_API, params=req_params)
+response.raise_for_status()
+total_results = response.json()["totalResults"]
+results = response.json()["articles"]
+if total_results > 3:
+    top_results = results[:3]
+print(top_results)
 ## STEP 3: Use https://www.twilio.com
 # Send a seperate message with the percentage change and each article's title and description to your phone number. 
 
