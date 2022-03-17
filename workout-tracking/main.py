@@ -2,7 +2,13 @@ import os
 import requests
 from datetime import datetime
 
-from keys import *
+# from keys import *
+APP_ID = os.environ.get("APP_ID")
+API_KEY = os.environ.get("API_KEY")
+SHEET_ENDPOINT = os.environ.get("SHEET_ENDPOINT")
+USERNAME = os.environ.get("USERNAME")
+PASSWORD = os.environ.get("PASSWORD")
+TOKEN = os.environ.get("TOKEN")
 
 natural_exercise_endpoint = "https://trackapi.nutritionix.com/v2/natural/exercise"
 
