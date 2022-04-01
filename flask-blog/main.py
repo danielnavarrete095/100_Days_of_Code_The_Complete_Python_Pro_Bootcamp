@@ -1,7 +1,11 @@
+from os import sep
 from tempfile import tempdir
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import requests
 from post import Post
+from smtp import send_mail
+from keys import *
+
 app = Flask(__name__)
 
 all_posts = []
@@ -30,11 +34,20 @@ def get_post(blog_id):
 def about():
     return render_template("about.html")
 
-
-@app.route('/contact')
+@app.route('/contact', methods=["POST", "GET"])
 def contact():
-    return render_template("contact.html")
-
+    if request.method == "GET":
+        return render_template("contact.html")
+    else:
+        req = request.form
+        name = req['name']
+        email = req['email']
+        phone = req['phone']
+        message = req['message']
+        print(name, email, phone, message, sep="\n")
+        mail_message = f"Name: {name}\nEmail: {email}\nPhone: {phone}\nMessage: {message}"
+        send_mail((GMAIL_USER, GMAIL_PASSWORD), HOTMAIL_USER, "New message from blog", mail_message)
+        return render_template("contact.html", message="Message sent succesfully!")
 
 if __name__ == "__main__":
     app.run(debug=True)
